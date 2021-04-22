@@ -22,7 +22,18 @@ const APIUtil = {
             type: "DELETE",
             dataType: "json",
         });
-    }
+    },
+
+    searchUsers: queryVal => {
+        return $.ajax({
+            url: '/users/search',
+            method: 'GET',
+            dataType: 'json', 
+            data: { query: queryVal },
+        });
+    },
+
+
 };
 
 module.exports = APIUtil;
@@ -84,6 +95,58 @@ FollowToggle.prototype.handleClick = function() {
 
 module.exports = FollowToggle;
 
+/***/ }),
+
+/***/ "./frontend/users_search.js":
+/*!**********************************!*\
+  !*** ./frontend/users_search.js ***!
+  \**********************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
+
+
+function UsersSearch(navEl) {
+  const $navEl = $(navEl);
+  this.$navEl = $navEl; 
+  this.$input = $(`.${$navEl.attr('class')} > input`);
+  this.$ul = $(`.${$navEl.attr('class')} > ul`);
+
+  this.handleInput(); 
+}
+
+UsersSearch.prototype.handleInput = function() {
+  const successCB = response => {
+    // this.render(); 
+    console.log('success!!');
+  }
+  const errorCB = response => { 
+    console.log(response); 
+    console.log('error');
+  };
+
+
+
+
+  this.$input.on("input", (e) => {
+    let val = this.$input.val();
+    APIUtil.searchUsers(val).then(successCB, errorCB);
+  })
+};
+
+
+
+
+
+
+
+
+
+
+module.exports = UsersSearch; 
+
+
+
 /***/ })
 
 /******/ 	});
@@ -121,6 +184,7 @@ var __webpack_exports__ = {};
   \*****************************/
 
 const FollowToggle = __webpack_require__(/*! ./follow_toggle */ "./frontend/follow_toggle.js");
+const UsersSearch = __webpack_require__(/*! ./users_search */ "./frontend/users_search.js");
 
 
 $(() => {
@@ -132,7 +196,10 @@ $(() => {
     fts.push(new FollowToggle(el));
   })
 
-
+  const $usNavs = $('.users-search');
+  $usNavs.each( function(idx, el) {
+    new UsersSearch(el);
+  })
   
 });
 

@@ -1,5 +1,6 @@
 <h1>Search!</h1>
 
+<!--  
 <form action="/users/search" method="GET">
   <input
     type="text"
@@ -9,6 +10,7 @@
   <input type="submit" value="Search Users!">
 </form>
 
+
 <ul>
   <% @users.each do |user| %>
     <li>
@@ -17,3 +19,14 @@
     </li>
   <% end %>
 </ul>
+-->
+
+<nav class="users-search">
+    <input
+    type="text"
+    name="query"
+    value="<%= @query %>">
+    <ul class="users"></ul>
+</nav>
+
+
