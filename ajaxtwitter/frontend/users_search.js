@@ -1,4 +1,5 @@
 const APIUtil = require("./api_util");
+const FollowToggle = require("./follow_toggle");
 
 function UsersSearch(navEl) {
   const $navEl = $(navEl);
@@ -12,6 +13,7 @@ function UsersSearch(navEl) {
 UsersSearch.prototype.handleInput = function() {
 
   const successCB = response => {
+    
     this.renderResults(response); 
     console.log('success!!');
   }
@@ -29,14 +31,23 @@ UsersSearch.prototype.handleInput = function() {
 
 UsersSearch.prototype.renderResults = function(users) {
   this.$ul.empty();
+
   for(let i = 0; i < users.length; i++) {
     let $li = $("<li>");
-    // $li.append($("<a>").attr("href", `users/${users[i].id}`))
     let $a = $("<a>");
     $a.attr("href", `${users[i].id}`);
     $a.text(users[i].username);
     $li.append($a);
+
+    let $button = $("<button>");
+    $button.addClass('follow-toggle');
+    let options = {
+      userId: users[i].id,
+      followState: users[i].followed,
+    }
+    new FollowToggle($button[0], options);
     
+    $li.append($button);
     this.$ul.append($li);
 
   }
