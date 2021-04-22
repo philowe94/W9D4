@@ -1,14 +1,41 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./frontend/api_util.js":
+/*!******************************!*\
+  !*** ./frontend/api_util.js ***!
+  \******************************/
+/***/ ((module) => {
+
+const APIUtil = {
+    followUser: id => {
+        return $.ajax({
+            url: `/users/${id}/follow`,
+            type: "POST",
+            dataType: "json",
+        })
+    },
+
+    unfollowUser: id => {
+        return $.ajax({
+            url: `/users/${id}/follow`,
+            type: "DELETE",
+            dataType: "json",
+        });
+    }
+};
+
+module.exports = APIUtil;
+
+/***/ }),
+
 /***/ "./frontend/follow_toggle.js":
 /*!***********************************!*\
   !*** ./frontend/follow_toggle.js ***!
   \***********************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-
-
+const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
 
 function FollowToggle(el) {
   const $el = $(el);
@@ -20,58 +47,40 @@ function FollowToggle(el) {
   this.handleClick(); 
 }
 
-
 FollowToggle.prototype.render = function() {
   if (this.followState) {
     this.$el.text("Unfollow!");
   } else {
     this.$el.text("Follow!");
   }
+  this.$el.prop("disabled", false);
 };
 
-
 FollowToggle.prototype.handleClick = function() {
+
   this.$el.on("click", (e) => {
+
     e.preventDefault(); 
+    $(e.target).prop("disabled", true);
+
+    const successCallback = (response) => {
+        this.followState = !this.followState;
+        this.render(); 
+    };
+    
+    const errorCallback = (response) => { 
+        console.log(response); 
+    };
 
     if (this.followState) {
-      $.ajax({
-        url: `/users/${this.user_id}/follow`,
-        type: "DELETE",
-        dataType: "json",
-        success: response => {
-          console.log("Unfollow was successful!");
-          this.followState = !this.followState;
-          this.render(); 
-        },
-        errors: response => { 
-          console.log(response); 
-          debugger
-        },
-      });
+      APIUtil.unfollowUser(this.user_id)
+      .then(successCallback, errorCallback);
     } else {
-      $.ajax({
-        url: `/users/${this.user_id}/follow`,
-        type: "POST",
-        dataType: "json",
-        success: (response) => {
-          console.log("follow success!!");
-          this.followState = !this.followState;
-          this.render(); 
-        },
-        errors: response => { console.log(response); },
-      })
+      APIUtil.followUser(this.user_id)
+      .then(successCallback, errorCallback);
     }
-
-
   });
 }
-
-
-
-
-
-
 
 module.exports = FollowToggle;
 
