@@ -105,7 +105,6 @@ module.exports = FollowToggle;
 
 const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
 
-
 function UsersSearch(navEl) {
   const $navEl = $(navEl);
   this.$navEl = $navEl; 
@@ -116,17 +115,16 @@ function UsersSearch(navEl) {
 }
 
 UsersSearch.prototype.handleInput = function() {
+
   const successCB = response => {
-    // this.render(); 
+    this.renderResults(response); 
     console.log('success!!');
   }
+
   const errorCB = response => { 
     console.log(response); 
     console.log('error');
   };
-
-
-
 
   this.$input.on("input", (e) => {
     let val = this.$input.val();
@@ -134,7 +132,20 @@ UsersSearch.prototype.handleInput = function() {
   })
 };
 
+UsersSearch.prototype.renderResults = function(users) {
+  this.$ul.empty();
+  for(let i = 0; i < users.length; i++) {
+    let $li = $("<li>");
+    // $li.append($("<a>").attr("href", `users/${users[i].id}`))
+    let $a = $("<a>");
+    $a.attr("href", `${users[i].id}`);
+    $a.text(users[i].username);
+    $li.append($a);
+    
+    this.$ul.append($li);
 
+  }
+}
 
 
 

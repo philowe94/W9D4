@@ -18,3 +18,7 @@
 
 .byebug_history
 ajaxtwitter/Gemfile.lock
+
+Gemfile.lock
+/Gemfile.lock
+./Gemfile.lock
